@@ -1,87 +1,152 @@
+# Time Off Microservice
 
-![CI](https://github.com/obens/time-off-microservice/actions/workflows/ci.yml/badge.svg)
-![NestJS](https://img.shields.io/badge/NestJS-framework-red)
-![TypeORM](https://img.shields.io/badge/TypeORM-ORM-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
-
+Microservice for **Time Off (vacation/leave) management** built with NestJS, responsible for managing employee balances, integrating with HCM systems, and processing leave requests with business rules.
 
 ---
 
-## 🚀 Overview
+# 🚀 Overview
 
-A backend microservice built with **NestJS** that manages employee time-off requests, ensuring consistency with an external **HCM system (mocked)**.
+This system simulates a corporate leave management environment, where:
 
----
-
-## 🧠 Core Features
-
-- Employee time-off request lifecycle
-- Balance tracking per employee & location
-- Approval / rejection workflow
-- Defensive balance validation
-- HCM batch + single sync (source of truth simulation)
+- The system receives employee balances from HCM
+- Stores and manages each employee’s balance
+- Allows creation of time off requests
+- Validates if sufficient balance is available
+- Approves or rejects requests
+- Automatically updates balances
 
 ---
 
-## 🏗️ Architecture
+# 🧱 System Architecture
 
-- NestJS modular architecture
-- TypeORM (SQLite)
-- REST API
-- Jest E2E tests
+The project follows a modular architecture based on NestJS, separating responsibilities into well-defined layers.
 
 ---
 
-## 📦 Modules
+## 📦 Application Layers
 
-### Balance Module
-Manages employee leave balance per location.
+### 1. Controller Layer (HTTP Interface)
 
-### TimeOff Module
-Handles request lifecycle:
-- PENDING
-- APPROVED
-- REJECTED
+Responsible for exposing API endpoints.
 
-### HCM Module
-Simulates external HR system:
-- Batch sync
-- Single sync
-- Source of truth behavior
+Responsibilities:
+- Receive HTTP requests
+- Perform basic input validation
+- Delegate execution to services
 
----
-
-## 🔄 Business Flow
-
-1. HCM sync updates balances
-2. Employee requests time-off
-3. Request stays PENDING
-4. Manager approves or rejects
-5. Approval deducts balance
+Examples:
+- `AppController`
+- `TimeOffController`
+- `HcmController`
+- `BalanceController`
 
 ---
 
-## 📡 API Endpoints
+### 2. Service Layer (Business Logic)
 
-### Balance
-- GET /balance/:employeeId/:locationId
-- POST /balance
+Core layer of the system.
 
-### TimeOff
-- POST /timeoff/request
-- GET /timeoff
-- POST /timeoff/:id/approve
-- POST /timeoff/:id/reject
+Responsible for:
+- Approval and rejection rules
+- Balance management
+- Business rules validation
+- Request processing
 
-### HCM
-- POST /hcm/sync-batch
-- POST /hcm/sync-single
+Examples:
+- `TimeOffService`
+- `BalanceService`
+- `HcmService`
 
 ---
 
-## 🧪 Testing
+### 3. Domain Layer (Entities)
 
-Run tests:
+Defines the main business objects:
 
-```bash
+- Employee
+- Balance
+- TimeOffRequest
+
+Responsible for maintaining domain rules and structure.
+
+---
+
+### 4. Data Layer (Persistence)
+
+Storage layer (mock or future database integration):
+
+- In-memory data simulation
+- Future ORM support (TypeORM/Prisma)
+
+---
+
+# 🔄 System Flow
+
+```text
+HCM sends balance update
+        ↓
+Balance Service stores balance
+        ↓
+Employee creates Time Off request
+        ↓
+TimeOff Service validates balance
+        ↓
+System approves or rejects request
+        ↓
+Balance is updated
+
+
+src/
+ ├── balance/         # balance management
+ ├── hcm/             # HCM integration
+ ├── timeoff/         # leave management rules
+ ├── app.controller.ts
+ ├── app.service.ts
+ ├── app.module.ts
+ └── main.ts
+
+
+How to Run the Project
+1. Install dependencies
+
+npm install
+
+
+Build the project
+npm run build
+npm run start
+
+Run unit tests
+npm run test
+
+Run end-to-end (E2E) tests
 npm run test:e2e
+
+Current coverage:
+Statements: 100%
+Branches: 100%
+Functions: 100%
+Lines: 100%
+
+
+
+
+Business Rules
+Employees cannot request more days than available balance
+Every request starts as PENDING
+Approval deducts balance automatically
+Rejection does not affect balance
+HCM can update balances at any time
+
+Testing Strategy
+Unit Tests
+Test isolated service logic
+E2E Tests
+Test full API flows
+Simulate real requests
+
+
+
+Author
+
+Obenson Maurice
