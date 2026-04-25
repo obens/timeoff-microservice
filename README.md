@@ -1,10 +1,9 @@
-# 🕒 Time-Off Microservice
 
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
-![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![CI](https://github.com/obens/time-off-microservice/actions/workflows/ci.yml/badge.svg)
 ![NestJS](https://img.shields.io/badge/NestJS-framework-red)
 ![TypeORM](https://img.shields.io/badge/TypeORM-ORM-blue)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
 
 ---
 
